@@ -1,0 +1,39 @@
+{
+  "Expensive": {
+    "type": [
+      "Cheeseburger",
+      "Four cheeses",
+      "Hawaiian",
+      "Bavarian"
+    ],
+    "size": {
+      "Large": 30,
+      "Standard": 25,
+      "Small": 20
+    }
+  },
+  "Standard": {
+    "type": [
+      "Vegetarian",
+      "Four seasons",
+      "Philadelphia"
+    ],
+    "size": {
+      "Large": 25,
+      "Standard": 20,
+      "Small": 15
+    }
+  },
+  "Cheap": {
+    "type": [
+      "Pepperoni",
+      "Margarita",
+      "Italian"
+    ],
+    "size": {
+      "Large": 20,
+      "Standard": 15,
+      "Small": 10
+    }
+  }
+}

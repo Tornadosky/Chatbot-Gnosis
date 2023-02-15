@@ -1,0 +1,312 @@
+{
+  "startMsg": " Hello! Welcome to Pizzeria \"Recko\". I am \"Gnosis\" Chatbot and I will help you to make an order.\n Do you want to have a look at our pizza list? ",
+  "quantity": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six"
+  ],
+  "praising": [
+    "OK!",
+    "Great choice!",
+    "Wonderful choice!",
+    "You have a great taste!",
+    "Writing down...",
+    "Let me right it down.",
+    "Good choice.",
+    "Wonderful taste.",
+    "I like your style.",
+    "You have made a great decision!",
+    "Great decision!",
+    "Wonderful.",
+    "Awesome!",
+    "Brilliant decision!",
+    "Good option!",
+    "Okay, and now..",
+    "Excellent decision!",
+    "I see..",
+    "Alright!",
+    "Ok.",
+    "Very good.",
+    "I like it!",
+    "I love it!",
+    "Refined taste!",
+    "Finally!",
+    "As usual.."
+  ],
+  "agree": [
+    " yes ",
+    "true",
+    "correct",
+    " Yas ",
+    " y ",
+    " yess ",
+    "sure",
+    " yup ",
+    " yeah ",
+    " yep ",
+    "of course",
+    "absolutely",
+    " ok ",
+    "pass",
+    "totally",
+    "right",
+    " ya ",
+    " k ",
+    " kk ",
+    " okay ",
+    "fine",
+    " good ",
+    "gladly",
+    "well",
+    " yass "
+  ],
+  "disagree": [
+    "false",
+    "incorrect",
+    " nah ",
+    " nope ",
+    " not ",
+    "sorry",
+    " no ",
+    " noo ",
+    " n ",
+    " that is it ",
+    " that is all "
+  ],
+  "greeting": [
+    "Hello!",
+    "Good to see you!",
+    "Hi there!",
+    "Nice to see you here.",
+    "Heeeyy!",
+    "Good day!"
+  ],
+  "goodbye": [
+    "I hope you've enjoyed my service.",
+    "Bye bye!",
+    "Goodbye!",
+    "Have a nice day!",
+    "Enjoy your meal!",
+    "I hope to see you again, soon.",
+    "Visit us again!",
+    "I'd love to welcome you back at some time.",
+    "Thank you for using my service.",
+    "Have a pleasant day!"
+  ],
+  "help": [
+    "\n-- order pizza",
+    "\n-- see menu or pizza list",
+    "\n-- our working hours",
+    "\n-- our location",
+    "\n-- contacts",
+    "\n-- social media",
+    "\n-- rating and reviews",
+    "\n-- diets",
+    "\n-- weight and price of the pizza",
+    "\n-- your current order",
+    "\n-- restart"
+  ],
+  "reviews": [
+    "\n- \"Wow, Amazing!\"",
+    "\n- \"Best Cafe ever!!!\"",
+    "\n- \"Well, it was ok, I guess 7/10\"",
+    "\n- \"I didn't like it. Lady at the checkout was rude.\"",
+    "\n- \"Bad service -> 8.5/10\"",
+    "\n- \"The pizza quality could be better!\"",
+    "\n- \"The atmosphere here is amazing..\"",
+    "\n- \"I loved pop band that performed there the other day <3\"",
+    "\n- \"Pizza was delicious! deserves 5 starts.\"",
+    "\n- \"Best cafe to go to after long and tiring day.\""
+  ],
+  "userClarification": [
+    "what do you have",
+    "suggest",
+    "example",
+    "what",
+    "list ",
+    " option",
+    "variant"
+  ],
+  "order": [
+    "Would you like to order pizza?",
+    "Do you want to order pizza?",
+    "Ready to make a pizza order?",
+    "Do you want to have a look at our pizza list?",
+    "Would you like to see our menu?",
+    "Maybe you want to order some pizza?",
+    "How about to order pizza?"
+  ],
+  "current_order": [
+    "*nothing here*",
+    "*you did not order anything yet*",
+    "*your order is empty*"
+  ],
+  "noQ": [
+    "How can I help you then?",
+    "What questions do you have then?",
+    "Ask what you want then.",
+    "What do you want to ask then?",
+    "Oh! You have a question then.",
+    "What is your question then?",
+    "Okay, probably you already know the menu.",
+    "Okay, I'm listening."
+  ],
+  "fallback": [
+    "Sorry, I don't understand what you meant by ",
+    "Ooops, I don't get it --> ",
+    "My apologies, I don't understand your request ",
+    "I was not programmed to answer this request ",
+    "I'm sorry, I don't know how to answer on your reply ",
+    "Something went wrong, I don't have any suitable replies for "
+  ],
+  "readyOrder": {
+    "notify": [
+      "Your order has been completed!",
+      "Your order is ready!",
+      "We finished!",
+      "All done!"
+    ],
+    "resultOne": [
+      "You've ordered [size] [type] pizza on [crust] crust with [sauce] sauce.",
+      "Your order is: [size] [type] pizza on [crust] dough. And some [sauce] sauce.",
+      "Result: [size] [type] pizza, [crust] crust, [sauce] sauce."
+    ],
+    "resultSeveral": [
+      "--> [size] [type] pizza on [crust] crust with [sauce] sauce"
+    ],
+    "oneMore": [
+      "Do you still want to add one more pizza?",
+      "Are you still NOT ready to submit?",
+      "If you finished with your order type \"NO\"",
+      "Do you want to order more?",
+      "Anything to add to your order? Yes or no?",
+      "Do you want to add something else to your order?",
+      "Do you want to modify your order more? Yes or no?",
+      "Type \"NO\" if you are ready to submit"
+    ],
+    "notDoneYet": [
+      "Okay. What else do you want to order?",
+      "What do you want to add?",
+      "One more pizza? What would you like to add?",
+      "Sure. What is it?"
+    ],
+    "order_number": [
+      "You have submitted your order! Your tracking number is [order_number].",
+      "Congrats! You have successfully submitted your order. Here is your tracking number: [order_number].",
+      "Your order was submitted successfully. You are able to track your order using this number [order_number]"
+    ]
+  },
+  "order_details": {
+    "grab_meal": [
+      "Delivery or pickup?",
+      "Would you like to pickup order by yourself or order a delivery?",
+      "Do you prefer delivery or pickup?"
+    ],
+    "user_address_q": [
+      "What is your address?",
+      "What address do you want to order it to?",
+      "Where do you live? Please provide your address."
+    ],
+    "user_address_answ": [
+      "The order will be at your place in [min] minutes.",
+      "Your order will be ready in [min] minutes. Our courier will contact you.",
+      "Order will be ready approximately in [min] min. You can check your order in our app. In case of any problems contact our service team."
+    ],
+    "our_address": [
+      "We are waiting for you at \"[restaurant_location]\" in [min] minutes.",
+      "Your order will be ready in [min] minutes. Please come to this address \"[restaurant_location]\"",
+      "You will find your order at \"[restaurant_location]\" in [min] minutes."
+    ]
+  },
+  "price": {
+    "result": [
+      "Overall price is [price]$.",
+      "You have to pay [price]$.",
+      "[price]$ is a result price.",
+      "Result price: [price]$.",
+      "All your pizzas will cost [price]$.",
+      "Your order will cost [price]$."
+    ],
+    "error": [
+      "Please add pizza type and pizza size to know the price. If you want to see all prices type \"menu\".",
+      "You request must include type and size of pizza to get its price.",
+      "You can type \"menu\" to see all prices. Otherwise, your question must include pizza type and size.",
+      "Make sure pizza type and pizza size are mentioned."
+    ]
+  },
+  "weight": {
+    "large": 500,
+    "standard": 400,
+    "small": 300
+  },
+  "type": {
+    "botQuestion": [
+      "What kind of pizza would you like?",
+      "What exactly would you like?",
+      "What are you choosing?",
+      "Have you made a decision? I'm ready to write down.",
+      "Are sticking to classic: margarita or four cheeses? Or something else?",
+      "What type of pizza do you want to order?",
+      "What are you ordering?",
+      "Have you chosen something already?",
+      "What type of pizza do you stick to?"
+    ]
+  },
+  "size": {
+    "botQuestion": [
+      "What size?",
+      "What size would you prefer: large, standard or small?",
+      "What about the size: large, standard, small?",
+      "Large, standard or small. Pick the size please.",
+      "Large, standard or small?"
+    ],
+    "botAnswer": [
+      "For size we have 3 options: large, standard or small.",
+      "We have large, standard and small pizza sizes.",
+      "Our pizzeria suggests three sizes: small, standard and large.",
+      "Small, standard and large."
+    ]
+  },
+  "sauce": {
+    "botQuestion": [
+      "What dip sauce would you like to choose?",
+      "What dip sauce you want to get on the side?",
+      "What about the dip sauce? Ketchup, ranch, BBQ sauce or ..? ",
+      "Pick the dip sauce now.",
+      "Please pick the dip sauce.",
+      "Do you want cheese sauce or ketchup on the side? Or something else?"
+    ],
+    "botAnswer": [
+      "For sauces we have several options: [sauce_list].",
+      "We have [sauce_list] dip sauces for our pizzas.",
+      "Our pizzeria suggests several variants: [sauce_list].",
+      "Have a look at our sauce list: [sauce_list].",
+      "[sauce_list]. What exactly would you like?",
+      "Choose something from this list: [sauce_list]."
+    ]
+  },
+  "crust": {
+    "botQuestion": [
+      "What about the pizza crust? Thin or thick?",
+      "Thin or thick crust?",
+      "Pick the crust now please",
+      "Do you prefer your pizza on thick or thin crust?",
+      "On which crust do you want your pizza? Thick, thin?",
+      "Thick crust pizza or thin crust pizza?",
+      "Would you like it on thin or thick crust?"
+    ],
+    "botAnswer": [
+      "For crust we have 2 options: thick and thin.",
+      "We make pizza on thick and thin crusts.",
+      "Our pizzeria suggests two variants: thick or thin.",
+      "We have thick and thin dough."
+    ]
+  }
+}

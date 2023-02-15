@@ -1,0 +1,34 @@
+{
+  "type": [
+    "Pepperoni",
+    "Vegetarian",
+    "Cheeseburger",
+    "Four seasons",
+    "Philadelphia",
+    "Four cheeses",
+    "Italian",
+    "Hawaiian",
+    "Bavarian",
+    "Margarita"
+  ],
+  "size": [
+    "small",
+    "standard",
+    "large"
+  ],
+  "sauce": [
+    "Ranch",
+    "Teriyaki",
+    "Cheese",
+    "Sweet and sour",
+    "Mustard",
+    "BBQ",
+    "barbecue",
+    "Ketchup",
+    "Hot Chili"
+  ],
+  "crust": [
+    " thin ",
+    " thick "
+  ]
+}
