@@ -1,0 +1,8 @@
+.msger-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: var(--border);
+    background: #eee;
+    color: #666;
+}
