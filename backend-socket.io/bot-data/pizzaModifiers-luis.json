@@ -1,0 +1,45 @@
+{
+    "pizzaType": [
+      "Pepperoni",
+      "Vegetarian",
+      "Cheeseburger",
+      "Four seasons",
+      "Philadelphia",
+      "Four cheeses",
+      "Italian",
+      "Hawaiian",
+      "Bavarian",
+      "Margarita"
+    ],
+    "reviews": [
+      "Wow, Amazing!",
+      "Best Cafe ever!!!",
+      "Well, it was ok, I guess 7/10",
+      "I didn't like it. Lady at the checkout was rude.",
+      "Bad service -> 8.5/10",
+      "The pizza quality could be better!",
+      "The atmosphere here is amazing..",
+      "I loved pop band that performed there the other day <3",
+      "Pizza was delicious! deserves 5 starts.",
+      "Best cafe to go to after long and tiring day."
+    ],
+    "contactDetails": {
+      "telephone": "+193 34 562800",
+      "email": "Gnosis@gmail.com"
+    },
+    "socialMedia": {
+      "facebook": "facebook_link",
+      "instagram": "insta_link",
+      "twitter": "twitter_link",
+      "website": "website_link"
+    },
+    "locationDetails": "Deggendorf, Graflinger Str. 35",
+    "currency": "$",
+    "weight": "gramms",
+    "workingHours": {
+      "dayMin": "1",
+      "dayMax": "5",
+      "timeMin": 9,
+      "timeMax": 20
+    }
+}

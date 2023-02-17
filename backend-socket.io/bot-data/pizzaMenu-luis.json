@@ -1,0 +1,66 @@
+{
+    "Expensive": {
+      "pizzaType": [
+        "Cheeseburger",
+        "Four cheeses",
+        "Hawaiian",
+        "Bavarian"
+      ],
+      "size": {
+        "Large": {
+          "price": 30,
+          "weight": 500
+        },
+        "Standard": {
+          "price": 25,
+          "weight": 400
+        },
+        "Small": {
+          "price": 20,
+          "weight": 300
+        }
+      }
+    },
+    "Standard": {
+      "pizzaType": [
+        "Vegetarian",
+        "Four seasons",
+        "Philadelphia"
+      ],
+      "size": {
+        "Large": {
+          "price": 25,
+          "weight": 500
+        },
+        "Standard": {
+          "price": 20,
+          "weight": 400
+        },
+        "Small": {
+          "price": 15,
+          "weight": 300
+        }
+      }
+    },
+    "Cheap": {
+      "pizzaType": [
+          "Pepperoni",
+          "Margarita",
+          "Italian"
+      ],
+      "size": {
+        "Large": {
+          "price": 20,
+          "weight": 500
+        },
+        "Standard": {
+          "price": 15,
+          "weight": 400
+        },
+        "Small": {
+          "price": 10,
+          "weight": 300
+        }
+      }
+    }
+}

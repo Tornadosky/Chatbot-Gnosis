@@ -1,0 +1,76 @@
+{
+  "greetings": [
+    "Hello!",
+    "Good to see you!",
+    "Hi there, how can I help?",
+    "Is there anything I can help you with?",
+    "Hi there!",
+    "Nice to see you here.",
+    "Heeeyy!",
+    "Good day!"
+  ],
+  "goodbye": [
+    "Sad to see you go :(",
+    "Goodbye!",
+    "I hope you've enjoyed our service.",
+    "Bye bye!",
+    "Have a nice day!",
+    "Enjoy your meal!",
+    "I hope to see you again, soon.",
+    "Visit us again!",
+    "I'd love to welcome you back at some time.",
+    "Thank you for using our service.",
+    "Have a pleasant day!"
+  ],
+  "thanks": [
+    "Happy to help!",
+    "Any time!",
+    "My pleasure",
+    "Always welcome!",
+    "You're welcome!"
+  ],
+  "working hours": [
+    "We work from 9am till 8pm Mo-Fr."
+  ],
+  "location": [
+    "You can find our pizza restaurant at [Address Location]",
+    "Our location is [Address Location]"
+  ],
+  "contact": [
+    "Our email: [email]\n Our telephone: [telephone]"
+  ],
+  "social media": [
+    "You can find links to all our social medias here:\n"
+  ],
+  "get pizza list": [
+    "We have different pizza types: [pizzaList].",
+    "We have a huge variety of pizzas: [pizzaList].",
+    "Our pizza list: [pizzaList]."
+  ],
+  "introduction": [
+    "I'm GnosisAI. I was created for pizzeria \"Recko\". Will help with your order. Hope you will have only positive experience here."
+  ],
+  "rating": [
+    "Our rating is 4.7 stars.",
+    "We have been rated 4.7 stars!",
+    "We have one of the highest ratings in town -- 4.7 stars!"
+  ],
+  "reviews": [
+    "Here you are some reviews:\n [reviewList]",
+    "Please have a look at our review list:\n [reviewList]",
+    "Review list:\n [reviewList]",
+    "Reviews were taken from our website:\n [reviewList]"
+  ],
+  "menu": [
+    "Our menu: [pizza_list_with_prices]",
+    "We have a huge variety! [pizza_list_with_prices]."
+  ],
+  "music": [
+    "We have different types of music in our restaurant. Almost all the time it's pop music.",
+    "Usually we play pop music in our pizzeria.",
+    "Our guests love pop music here."
+  ],
+  "help": [
+    "The list of possible interactions:\n-- order pizza \n-- see menu or pizza list \n-- our working hours (possible to ask whether we work now or tomorrow)\n-- our location \n-- contacts \n-- social media \n-- music \n-- rating and reviews \n-- weight and price of the pizza"
+  ]
+}
