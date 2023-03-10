@@ -214,3 +214,66 @@ function modifyAnswer(keyword_tag, answ, num = 0) {
             return answ
     }
 }
+
+const operate = (data) => {
+    let answer = ""
+    let is_menu_printed = false;
+    let is_help_printed = false;
+
+
+    // __MODIFYING DATA__
+
+    // modifying user input (text)
+    let userTextOrig = " " + data.toLowerCase()
+        .replace(/[.,/#!$%^&*;:{}=_`~()]/g, "")
+        .replace(/s{2,}/g, " ")
+        .replace(/ a /g, " ")
+        .replace(/ the /g, " ")
+        .replace(/ an /g, " ")
+        .replace(/'s/g, " is")
+        .replace(/please /g, "")
+        .replace(/ please/g, "") + " "
+    let userText = userTextOrig;
+
+    // __SWITCHING TO *PIZZA_MODE*__
+
+    // if pizza's {type} mentioned --> activating *pizza_mode*
+    if(!pizza_mode) {
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type)) {
+                almost_ready = false
+                pizza_mode = true;
+                break;
+            }
+        }
+    }
+
+
+    // __ADDITIONAL AGGRESSIVE QUESTION__
+    // to switch to pizza_mode
+    if(!pizza_mode && answer !== "" && !is_menu_printed && !is_help_printed && !almost_ready)
+        answer += "\n " + randomizeAnswers(variants.order); // want to order pizza?
+
+    // __FALLBACKS__
+    if (answer === "") {
+        //soft fallback
+        answer = randomizeAnswers(variants.fallback)
+        answer += "\"" + data + "\"";
+
+        botAnswers.push("fallback")
+
+        // hard fallback (= 3 soft fallbacks)
+        if (botAnswers.length > 4)
+            // if last 4 bot answers identical
+            if (botAnswers.slice(-4).every((val, i, arr) => val === arr[0]))
+                answer = restart(answer);  // answer = startMsg
+    }
+    else {
+        botAnswers.push(answer);
+    }
+
+
+    // __SEND ANSWER__
+    return answer;
+}
+module.exports = operate
