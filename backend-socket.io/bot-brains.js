@@ -217,6 +217,10 @@ function modifyAnswer(keyword_tag, answ, num = 0) {
 
 const operate = (data) => {
     let answer = ""
+    let keywords = []
+
+    let is_pizza_prop_upd = false;
+    let yes_no_q = false;
     let is_menu_printed = false;
     let is_help_printed = false;
 
@@ -235,17 +239,52 @@ const operate = (data) => {
         .replace(/ please/g, "") + " "
     let userText = userTextOrig;
 
-    // __SWITCHING TO *PIZZA_MODE*__
+    // bots' last answer
+    let botAnswers_last = botAnswers[botAnswers.length - 1].slice(botAnswers[botAnswers.length - 1]
+        .lastIndexOf('\n')).toLowerCase()
 
-    // if pizza's {type} mentioned --> activating *pizza_mode*
-    if(!pizza_mode) {
-        for (let pizza_type of pizzaModifiers.type) {
-            if (userText.includes(pizza_type)) {
-                almost_ready = false
-                pizza_mode = true;
-                break;
+
+    // __ORDER IS READY MODE__
+
+    // switching to *order_fully_ready* mode
+    if(almost_ready) {
+        // not ready to submit --> back to *original* mode
+        for (let agree_answer of variants.agree) {
+            if (userText.includes(agree_answer))
+
+                for (let question of variants.readyOrder.oneMore)
+                    if (botAnswers_last.includes(question.toLowerCase())) {
+                        almost_ready = false
+                        botAnswers.push(answer)
+                        return answer = randomizeAnswers(variants.readyOrder.notDoneYet) // what else to order?
+                    }
+
+
+        }
+
+        // submit order --> *fully_ready* mode
+        for (let disagree_answer of variants.disagree) {
+            if (userText.includes(disagree_answer)) {
+
+                for (let question of variants.readyOrder.oneMore) {
+                    if (botAnswers_last.includes(question.toLowerCase())) {
+                        answer = randomizeAnswers(variants.readyOrder.order_number)
+                        answer = modifyAnswer("order_number", answer)  // tracking number
+                        answer += " " + randomizeAnswers(variants.price.result)
+                        answer = modifyAnswer("overall_price", answer)  // overall price
+                        answer += "\n" + randomizeAnswers(variants.order_details.grab_meal) // pickup or delivery?
+
+                        almost_ready = false
+                        fully_ready = true
+
+                        botAnswers.push(answer)
+                        return answer
+                    }
+                }
             }
         }
+
+        return randomizeAnswers(variants.readyOrder.oneMore)  // repeat until answer received
     }
 
 
