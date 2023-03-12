@@ -287,6 +287,34 @@ const operate = (data) => {
         return randomizeAnswers(variants.readyOrder.oneMore)  // repeat until answer received
     }
 
+    // order is fully ready --> get delivery details
+    if(fully_ready){
+        almost_ready = false
+
+        if(botAnswers[botAnswers.length - 1].includes("address")){
+            answer = randomizeAnswers(variants.order_details.user_address_answ) // inform user: order time
+            answer = modifyAnswer("user_address_answ", answer)
+            answer += " " + randomizeAnswers(variants.goodbye)
+
+            botAnswers.push(answer)
+            restart()
+            return answer
+        }
+        if(userText.includes("deliver")){
+            answer = randomizeAnswers(variants.order_details.user_address_q) // what is users address
+
+            botAnswers.push(answer)
+            return  answer
+        }
+        if(userText.includes("pickup")){
+            answer = randomizeAnswers(variants.order_details.our_address) // inform user: our location and time
+            answer = modifyAnswer("our_address", answer)
+
+            botAnswers.push(answer)
+            restart()
+            return answer
+        }
+    }
 
     // __ADDITIONAL AGGRESSIVE QUESTION__
     // to switch to pizza_mode
