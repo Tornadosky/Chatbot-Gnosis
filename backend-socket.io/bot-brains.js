@@ -217,9 +217,6 @@ function modifyAnswer(keyword_tag, answ, num = 0) {
 
 const operate = (data) => {
     let answer = ""
-    let keywords = []
-
-    let is_pizza_prop_upd = false;
     let yes_no_q = false;
     let is_menu_printed = false;
     let is_help_printed = false;
@@ -254,8 +251,6 @@ const operate = (data) => {
 
                 for (let question of variants.readyOrder.oneMore)
                     if (botAnswers_last.includes(question.toLowerCase())) {
-                        almost_ready = false
-                        botAnswers.push(answer)
                         return answer = randomizeAnswers(variants.readyOrder.notDoneYet) // what else to order?
                     }
 
@@ -316,10 +311,61 @@ const operate = (data) => {
         }
     }
 
+    // __ORIGINAL MODE__
+
+    // Y/N QUESTION <--> BOT KEYWORD SPOTTING
+
+    // if last bot msg is new_line --> probably y/n question
+    if(botAnswers_last) {
+        // yes case
+        for (let agree_answer of variants.agree) {
+            if (userText.includes(agree_answer)) {
+                yes_no_q = true;
+
+                // get bot response from tags.json file
+                for (let tagObj of tags)
+                    if (botAnswers_last.includes(tagObj.tag)) {
+
+                        answer = randomizeAnswers(tagObj.responses);
+                        answer = modifyAnswer(tagObj.tag, answer);
+
+                        // better logic and looks
+                        if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
+                            tagObj.tag === "thanks" || tagObj.tag === "current_order") {
+                            is_menu_printed = true; // to not ask additional question after these cases
+                        }
+                        if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
+                            let next_q = variants.type.botQuestion // what exact pizza you want
+                            answer += " " + randomizeAnswers(next_q)
+                        }
+
+                        break;
+                    }
+                almost_ready = false;
+                break;
+            }
+        }
+        // no case
+        if (!yes_no_q) {
+
+            // "no thanks" case included
+            for (let disagree_answer of variants.disagree)
+                if (userText.includes(disagree_answer)) {
+
+                    for (let tagObj of tags)
+                        if (tagObj.tag === "thanks")
+                            for (let tagPattern of tagObj.patterns)
+                                if (userText.includes(tagPattern))
+                                    userText = userText.replace(tagPattern, " ");
+
+                    answer = randomizeAnswers(variants.noQ) // how can i help you
+                    is_help_printed = true
+                    break;
+                }
+        }
+    }
+
     // __ADDITIONAL AGGRESSIVE QUESTION__
-    // to switch to pizza_mode
-    if(!pizza_mode && answer !== "" && !is_menu_printed && !is_help_printed && !almost_ready)
-        answer += "\n " + randomizeAnswers(variants.order); // want to order pizza?
 
     // __FALLBACKS__
     if (answer === "") {
@@ -327,9 +373,7 @@ const operate = (data) => {
         answer = randomizeAnswers(variants.fallback)
         answer += "\"" + data + "\"";
 
-        botAnswers.push("fallback")
-
-        // hard fallback (= 3 soft fallbacks)
+        // hard fallback (= 4 soft fallbacks)
         if (botAnswers.length > 4)
             // if last 4 bot answers identical
             if (botAnswers.slice(-4).every((val, i, arr) => val === arr[0]))
