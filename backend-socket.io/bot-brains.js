@@ -221,7 +221,6 @@ const operate = (data) => {
     let is_menu_printed = false;
     let is_help_printed = false;
 
-
     // __MODIFYING DATA__
 
     // modifying user input (text)
@@ -242,7 +241,6 @@ const operate = (data) => {
 
 
     // __ORDER IS READY MODE__
-
     // switching to *order_fully_ready* mode
     if(almost_ready) {
         // not ready to submit --> back to *original* mode
@@ -253,8 +251,6 @@ const operate = (data) => {
                     if (botAnswers_last.includes(question.toLowerCase())) {
                         return answer = randomizeAnswers(variants.readyOrder.notDoneYet) // what else to order?
                     }
-
-
         }
 
         // submit order --> *fully_ready* mode
@@ -265,7 +261,6 @@ const operate = (data) => {
                     if (botAnswers_last.includes(question.toLowerCase())) {
                         answer = randomizeAnswers(variants.readyOrder.order_number)
                         answer = modifyAnswer("order_number", answer)  // tracking number
-                        answer += " " + randomizeAnswers(variants.price.result)
                         answer = modifyAnswer("overall_price", answer)  // overall price
                         answer += "\n" + randomizeAnswers(variants.order_details.grab_meal) // pickup or delivery?
 
@@ -288,7 +283,6 @@ const operate = (data) => {
 
         if(botAnswers[botAnswers.length - 1].includes("address")){
             answer = randomizeAnswers(variants.order_details.user_address_answ) // inform user: order time
-            answer = modifyAnswer("user_address_answ", answer)
             answer += " " + randomizeAnswers(variants.goodbye)
 
             botAnswers.push(answer)
@@ -297,14 +291,12 @@ const operate = (data) => {
         }
         if(userText.includes("deliver")){
             answer = randomizeAnswers(variants.order_details.user_address_q) // what is users address
-
             botAnswers.push(answer)
             return  answer
         }
         if(userText.includes("pickup")){
             answer = randomizeAnswers(variants.order_details.our_address) // inform user: our location and time
             answer = modifyAnswer("our_address", answer)
-
             botAnswers.push(answer)
             restart()
             return answer
@@ -363,6 +355,87 @@ const operate = (data) => {
                     break;
                 }
         }
+    }
+
+    // SIMPLE QUESTION <--> USER KEYWORD SPOTTING
+
+    // get response to simple request
+    if(!yes_no_q) {
+        let answer_picked = false; // answer to priority question
+
+        for (let tagObj of tags) {
+            for (let tagPattern of tagObj.patterns)
+                if (userText.includes(tagPattern)) {
+
+                    answer_picked = true;
+
+                    answer = randomizeAnswers(tagObj.responses)
+                    answer = modifyAnswer(tagObj.tag, answer)
+
+                    // better logic and looks
+                    if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
+                        tagObj.tag === "thanks" || tagObj.tag === "current_order") {
+                        is_menu_printed = true; // to not ask additional question after these cases
+                    }
+                    if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
+                        let next_q = variants.type.botQuestion  // what exact pizza you want
+                        answer += " " + randomizeAnswers(next_q)
+                    }
+                    is_help_printed = false
+                    break;
+                }
+
+            if(answer_picked)
+                break;
+        }
+    }
+
+    // request with modify intent
+    // weight, cost, restart adn current_order cases --> return answer
+    for (let tagObj of tags) {
+        for (let tagPattern of tagObj.patterns)
+            if (userText.includes(tagPattern))
+                switch (tagObj.tag) {
+                    case "restart":
+                        answer = restart() // answer = startMsg
+                        return answer
+                    case "current_order":
+                        answer = randomizeAnswers(tagObj.responses)
+                        answer = modifyAnswer(tagObj.tag, answer)
+
+                        botAnswers.push(answer)
+                        return answer
+                    case "weight":
+                        answer = randomizeAnswers(tagObj.responses)
+                        answer = modifyAnswer(tagObj.tag, answer)
+
+                        botAnswers.push(answer)
+                        return answer
+                    case "price":
+                        answer = ""
+
+                        for (let pizza_type of pizzaModifiers.type) {
+                            if (userText.includes(pizza_type)) {
+
+                                for (let pizza_size of pizzaModifiers.size)
+                                    if (userText.includes(pizza_size)) {
+                                        answer = randomizeAnswers(tagObj.responses)
+                                        answer = answer.replace(/\[type]/g, pizza_type);
+                                        answer = answer.replace(/\[size]/g, pizza_size);
+                                        answer = answer.replace(/\[price]/g,
+                                            getPrice(pizza_type, pizza_size).toString());
+                                        break;
+                                    }
+
+                                break;
+                            }
+                        }
+                        if (answer === "")
+                            answer = randomizeAnswers(variants.price.error)  // pizza type and size must be included
+
+                        botAnswers.push(answer)
+                        return answer
+                }
     }
 
     // __ADDITIONAL AGGRESSIVE QUESTION__
