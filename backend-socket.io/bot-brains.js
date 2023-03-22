@@ -438,6 +438,52 @@ const operate = (data) => {
                 }
     }
 
+    // __SWITCHING TO *PIZZA_MODE*__
+
+    // if pizza's {type} mentioned --> activating *pizza_mode*
+    if(!pizza_mode) {
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type)) {
+                almost_ready = false
+                pizza_mode = true;
+                break;
+            }
+        }
+    }
+
+    // __PIZZA MODE__
+
+    // cyclic questions until order is completed
+    if (pizza_mode) {
+
+        // CREATING OBJECTS AND PUSHING TO ORDER LIST
+
+        //  "{num} {size} {pizza_type}" recognition
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type))
+                for (let quantity of variants.quantity)
+                    if (userText.includes(quantity))
+                        for (let pizza_size of pizzaModifiers.size)
+                            if (userText.includes(quantity + " " + pizza_size + " " + pizza_type)) {
+
+                                // deleting info  --- not to get keywords for the second time after
+                                userText = userText.replace(quantity, "");
+                                userText = userText.replace(pizza_size, "");
+                                userText = userText.replace(pizza_type, "");
+
+                                let amount = getAmount(quantity); // "three" --> 3 as int
+
+                                // create and push pizzas
+                                for (let i = 0; i < amount; i++)
+                                    pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
+
+
+                                pizza_quantity += amount;
+                                is_pizza_prop_upd = true;
+                            }
+        }
+    }
+
     // __ADDITIONAL AGGRESSIVE QUESTION__
 
     // __FALLBACKS__
