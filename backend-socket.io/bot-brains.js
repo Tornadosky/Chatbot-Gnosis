@@ -259,10 +259,6 @@ const operate = (data) => {
 
                 for (let question of variants.readyOrder.oneMore) {
                     if (botAnswers_last.includes(question.toLowerCase())) {
-                        answer = randomizeAnswers(variants.readyOrder.order_number)
-                        answer = modifyAnswer("order_number", answer)  // tracking number
-                        answer = modifyAnswer("overall_price", answer)  // overall price
-                        answer += "\n" + randomizeAnswers(variants.order_details.grab_meal) // pickup or delivery?
 
                         almost_ready = false
                         fully_ready = true
@@ -282,10 +278,6 @@ const operate = (data) => {
         almost_ready = false
 
         if(botAnswers[botAnswers.length - 1].includes("address")){
-            answer = randomizeAnswers(variants.order_details.user_address_answ) // inform user: order time
-            answer += " " + randomizeAnswers(variants.goodbye)
-
-            botAnswers.push(answer)
             restart()
             return answer
         }
@@ -321,16 +313,6 @@ const operate = (data) => {
                         answer = randomizeAnswers(tagObj.responses);
                         answer = modifyAnswer(tagObj.tag, answer);
 
-                        // better logic and looks
-                        if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
-                            tagObj.tag === "thanks" || tagObj.tag === "current_order") {
-                            is_menu_printed = true; // to not ask additional question after these cases
-                        }
-                        if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
-                            let next_q = variants.type.botQuestion // what exact pizza you want
-                            answer += " " + randomizeAnswers(next_q)
-                        }
-
                         break;
                     }
                 almost_ready = false;
@@ -345,7 +327,6 @@ const operate = (data) => {
                 if (userText.includes(disagree_answer)) {
 
                     for (let tagObj of tags)
-                        if (tagObj.tag === "thanks")
                             for (let tagPattern of tagObj.patterns)
                                 if (userText.includes(tagPattern))
                                     userText = userText.replace(tagPattern, " ");
@@ -372,11 +353,6 @@ const operate = (data) => {
                     answer = randomizeAnswers(tagObj.responses)
                     answer = modifyAnswer(tagObj.tag, answer)
 
-                    // better logic and looks
-                    if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
-                        tagObj.tag === "thanks" || tagObj.tag === "current_order") {
-                        is_menu_printed = true; // to not ask additional question after these cases
-                    }
                     if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
                         let next_q = variants.type.botQuestion  // what exact pizza you want
                         answer += " " + randomizeAnswers(next_q)
@@ -416,7 +392,6 @@ const operate = (data) => {
 
                         for (let pizza_type of pizzaModifiers.type) {
                             if (userText.includes(pizza_type)) {
-
                                 for (let pizza_size of pizzaModifiers.size)
                                     if (userText.includes(pizza_size)) {
                                         answer = randomizeAnswers(tagObj.responses)
@@ -458,29 +433,105 @@ const operate = (data) => {
 
         // CREATING OBJECTS AND PUSHING TO ORDER LIST
 
-        //  "{num} {size} {pizza_type}" recognition
+        //  "{num} {pizza_type}" recognition
         for (let pizza_type of pizzaModifiers.type) {
             if (userText.includes(pizza_type))
                 for (let quantity of variants.quantity)
-                    if (userText.includes(quantity))
-                        for (let pizza_size of pizzaModifiers.size)
-                            if (userText.includes(quantity + " " + pizza_size + " " + pizza_type)) {
+                    if (userText.includes(quantity + " " + pizza_type)) {
 
-                                // deleting info  --- not to get keywords for the second time after
-                                userText = userText.replace(quantity, "");
-                                userText = userText.replace(pizza_size, "");
-                                userText = userText.replace(pizza_type, "");
+                        // deleting info  --- not to get keywords for the second time after
+                        userText = userText.replace(quantity, "");
+                        userText = userText.replace(pizza_type, "");
 
-                                let amount = getAmount(quantity); // "three" --> 3 as int
+                        let amount = getAmount(quantity); // "three" --> 3 as int
 
-                                // create and push pizzas
-                                for (let i = 0; i < amount; i++)
-                                    pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
+                        // create and push pizzas
+                        for (let i = 0; i < amount; i++)
+                            pizza_lst.push({type: pizza_type, size: "", sauce: "", crust: ""});
+
+                        pizza_quantity += amount;
+                        is_pizza_prop_upd = true;
+                    }
+        }
+
+        //  "{size} {pizza_type}" recognition
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type))
+                for (let pizza_size of pizzaModifiers.size)
+                    if (userText.includes(pizza_size + " " + pizza_type)) {
+
+                        // deleting info  --- not to get keywords for the second time after
+                        userText = userText.replace(pizza_size, "");
+                        userText = userText.replace(pizza_type, "");
+
+                        pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
+
+                        pizza_quantity++;
+                        is_pizza_prop_upd = true;
+                    }
+        }
+
+        // "{pizza_type}" recognition
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type)) {
+
+                // deleting info  --- not to get keywords for the second time after
+                userText = userText.replace(pizza_type, "");
+
+                pizza_lst.push({type: pizza_type, size: "", sauce: "", crust: ""});
+
+                pizza_quantity++;
+                is_pizza_prop_upd = true;
+            }
+        }
 
 
-                                pizza_quantity += amount;
-                                is_pizza_prop_upd = true;
-                            }
+        // SORTING [as order will be filled respectively]
+        pizza_lst = bubbleSort(userTextOrig, pizza_lst, "type");
+
+
+        // FILLING ORDER
+
+        let textNoKeywords = userText; // copy for further sorting
+        // get modifier keywords
+        for (let pizModProperty in pizzaModifiers) {
+            for (let modifyPattern of pizzaModifiers[pizModProperty]) {
+
+                let keyword_pushed = false;
+                if (textNoKeywords.includes(modifyPattern)) {
+
+                    // add keyword <-- if (key:"") of pizza in pizza list
+                    for (let i = 0; i < pizza_lst.length; i++) {
+                        for (let pizza_prop in pizza_lst[i])
+                            if (pizModProperty === pizza_prop)
+                                if (pizza_lst[i][pizza_prop] === "") {
+                                    keywords.push({"tag": pizModProperty, "keyword": modifyPattern});
+                                    keyword_pushed = true;
+                                    break;
+                                }
+
+                        if (keyword_pushed)
+                            break;
+                    }
+                    textNoKeywords = textNoKeywords.replace(modifyPattern, "");
+                }
+            }
+        }
+
+        // SORTING [as order will be filled respectively]
+        keywords = bubbleSort(userText, keywords, "keyword");
+
+        // fill in the order according to keywords found -- priority for first pizza
+        for (let property in pizzaModifiers) {
+            for (let keywordObj of keywords)
+                if (property === keywordObj.tag)
+                    for (let i = 0; i < pizza_lst.length; i++)
+                        if (pizza_lst[i][property] === "") {
+                            pizza_lst[i][keywordObj.tag] = keywordObj.keyword;
+
+                            is_pizza_prop_upd = true; // better looks
+                            break;
+                        }
         }
     }
 
