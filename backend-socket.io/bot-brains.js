@@ -485,13 +485,10 @@ const operate = (data) => {
             }
         }
 
-
         // SORTING [as order will be filled respectively]
         pizza_lst = bubbleSort(userTextOrig, pizza_lst, "type");
 
-
         // FILLING ORDER
-
         let textNoKeywords = userText; // copy for further sorting
         // get modifier keywords
         for (let pizModProperty in pizzaModifiers) {
@@ -499,20 +496,6 @@ const operate = (data) => {
 
                 let keyword_pushed = false;
                 if (textNoKeywords.includes(modifyPattern)) {
-
-                    // add keyword <-- if (key:"") of pizza in pizza list
-                    for (let i = 0; i < pizza_lst.length; i++) {
-                        for (let pizza_prop in pizza_lst[i])
-                            if (pizModProperty === pizza_prop)
-                                if (pizza_lst[i][pizza_prop] === "") {
-                                    keywords.push({"tag": pizModProperty, "keyword": modifyPattern});
-                                    keyword_pushed = true;
-                                    break;
-                                }
-
-                        if (keyword_pushed)
-                            break;
-                    }
                     textNoKeywords = textNoKeywords.replace(modifyPattern, "");
                 }
             }
@@ -533,6 +516,54 @@ const operate = (data) => {
                             break;
                         }
         }
+    }
+
+    // PICK MODIFIER QUESTION
+
+    // picking next question to modify order
+    for (let i = 0; i < pizza_lst.length; i++) {
+
+        let answer_picked;
+        for (let property in pizza_lst[i]) {
+
+            answer_picked = false;
+            if (pizza_lst[i][property] === "") {
+
+                // text formatting
+                if (answer !== "" && !yes_no_q)
+                    answer += " ";
+
+                // better looks
+                if (is_pizza_prop_upd) {
+                    let praising_list = variants.praising;
+                    answer = randomizeAnswers(praising_list); // Okay! Great! etc..
+                    answer += " ";
+                }
+
+                switch (property) {
+                    case "size":
+
+                        if (!answer_picked)
+                            answer += randomizeAnswers(variants.size.botQuestion); // what size
+
+                        answer_picked = true;
+                        break;
+                    case "sauce":
+                        if (!answer_picked) {
+                            let sauce_answer = randomizeAnswers(variants.sauce.botQuestion); // what sauce
+                            sauce_answer = modifyAnswer("sauce", sauce_answer);
+                            answer += sauce_answer;
+                        }
+
+                        answer_picked = true;
+                        break;
+                }
+            }
+            if (answer_picked)
+                break;
+        }
+        if (answer_picked)
+            break;
     }
 
     // __ADDITIONAL AGGRESSIVE QUESTION__
