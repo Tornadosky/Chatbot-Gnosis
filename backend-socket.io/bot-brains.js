@@ -395,10 +395,7 @@ const operate = (data) => {
                                 for (let pizza_size of pizzaModifiers.size)
                                     if (userText.includes(pizza_size)) {
                                         answer = randomizeAnswers(tagObj.responses)
-                                        answer = answer.replace(/\[type]/g, pizza_type);
-                                        answer = answer.replace(/\[size]/g, pizza_size);
-                                        answer = answer.replace(/\[price]/g,
-                                            getPrice(pizza_type, pizza_size).toString());
+                                        getPrice(pizza_type, pizza_size).toString();
                                         break;
                                     }
 
@@ -440,8 +437,6 @@ const operate = (data) => {
                     if (userText.includes(quantity + " " + pizza_type)) {
 
                         // deleting info  --- not to get keywords for the second time after
-                        userText = userText.replace(quantity, "");
-                        userText = userText.replace(pizza_type, "");
 
                         let amount = getAmount(quantity); // "three" --> 3 as int
 
@@ -461,8 +456,6 @@ const operate = (data) => {
                     if (userText.includes(pizza_size + " " + pizza_type)) {
 
                         // deleting info  --- not to get keywords for the second time after
-                        userText = userText.replace(pizza_size, "");
-                        userText = userText.replace(pizza_type, "");
 
                         pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
 
@@ -476,7 +469,6 @@ const operate = (data) => {
             if (userText.includes(pizza_type)) {
 
                 // deleting info  --- not to get keywords for the second time after
-                userText = userText.replace(pizza_type, "");
 
                 pizza_lst.push({type: pizza_type, size: "", sauce: "", crust: ""});
 
@@ -493,8 +485,6 @@ const operate = (data) => {
         // get modifier keywords
         for (let pizModProperty in pizzaModifiers) {
             for (let modifyPattern of pizzaModifiers[pizModProperty]) {
-
-                let keyword_pushed = false;
                 if (textNoKeywords.includes(modifyPattern)) {
                     textNoKeywords = textNoKeywords.replace(modifyPattern, "");
                 }
@@ -511,8 +501,6 @@ const operate = (data) => {
                     for (let i = 0; i < pizza_lst.length; i++)
                         if (pizza_lst[i][property] === "") {
                             pizza_lst[i][keywordObj.tag] = keywordObj.keyword;
-
-                            is_pizza_prop_upd = true; // better looks
                             break;
                         }
         }
@@ -564,6 +552,36 @@ const operate = (data) => {
         }
         if (answer_picked)
             break;
+    }
+
+    // CURRENT ORDER READY
+
+    let all_pizzas_done = 0
+    for (let i = 0; i < pizza_lst.length; i++) {
+        if (Object.values(pizza_lst[i]).every(x => x !== '')) { // all prop of all pizzas are not empty
+
+            all_pizzas_done++;
+            if(all_pizzas_done === pizza_lst.length) {
+                if (pizza_lst.length === 1) {
+                    answer = randomizeAnswers(variants.readyOrder.notify);   // order is ready!
+                    answer += " " + randomizeAnswers(variants.readyOrder.resultOne);
+                    answer = modifyAnswer("ready_pizza", answer);
+                } else {
+                    answer = randomizeAnswers(variants.readyOrder.notify);  // order is ready!
+
+                    // list for several pizzas
+                    for (let i = 0; i < pizza_lst.length; i++){
+                        answer += "\n " + variants.readyOrder.resultSeveral;
+                        answer = modifyAnswer("ready_pizza", answer, i);
+                    }
+                }
+
+                answer += "\n" + randomizeAnswers(variants.readyOrder.oneMore); // want to order more?
+
+                almost_ready = true;
+                pizza_mode = false;
+            }
+        }
     }
 
     // __ADDITIONAL AGGRESSIVE QUESTION__
