@@ -217,9 +217,13 @@ function modifyAnswer(keyword_tag, answ, num = 0) {
 
 const operate = (data) => {
     let answer = ""
+    let keywords = []
+
+    let is_pizza_prop_upd = false;
     let yes_no_q = false;
     let is_menu_printed = false;
     let is_help_printed = false;
+
 
     // __MODIFYING DATA__
 
@@ -241,6 +245,7 @@ const operate = (data) => {
 
 
     // __ORDER IS READY MODE__
+
     // switching to *order_fully_ready* mode
     if(almost_ready) {
         // not ready to submit --> back to *original* mode
@@ -249,8 +254,12 @@ const operate = (data) => {
 
                 for (let question of variants.readyOrder.oneMore)
                     if (botAnswers_last.includes(question.toLowerCase())) {
+                        almost_ready = false
+                        botAnswers.push(answer)
                         return answer = randomizeAnswers(variants.readyOrder.notDoneYet) // what else to order?
                     }
+
+
         }
 
         // submit order --> *fully_ready* mode
@@ -259,6 +268,11 @@ const operate = (data) => {
 
                 for (let question of variants.readyOrder.oneMore) {
                     if (botAnswers_last.includes(question.toLowerCase())) {
+                        answer = randomizeAnswers(variants.readyOrder.order_number)
+                        answer = modifyAnswer("order_number", answer)  // tracking number
+                        answer += " " + randomizeAnswers(variants.price.result)
+                        answer = modifyAnswer("overall_price", answer)  // overall price
+                        answer += "\n" + randomizeAnswers(variants.order_details.grab_meal) // pickup or delivery?
 
                         almost_ready = false
                         fully_ready = true
@@ -278,17 +292,24 @@ const operate = (data) => {
         almost_ready = false
 
         if(botAnswers[botAnswers.length - 1].includes("address")){
+            answer = randomizeAnswers(variants.order_details.user_address_answ) // inform user: order time
+            answer = modifyAnswer("user_address_answ", answer)
+            answer += " " + randomizeAnswers(variants.goodbye)
+
+            botAnswers.push(answer)
             restart()
             return answer
         }
         if(userText.includes("deliver")){
             answer = randomizeAnswers(variants.order_details.user_address_q) // what is users address
+
             botAnswers.push(answer)
             return  answer
         }
         if(userText.includes("pickup")){
             answer = randomizeAnswers(variants.order_details.our_address) // inform user: our location and time
             answer = modifyAnswer("our_address", answer)
+
             botAnswers.push(answer)
             restart()
             return answer
