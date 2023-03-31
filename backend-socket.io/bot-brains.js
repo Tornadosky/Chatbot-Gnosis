@@ -83,19 +83,19 @@ function getOverallPrice(){
     return price
 }
 function getPrice(pizza, size){
-        for (let price_category in pizzaMenu) {
-            for (let pizza_type of pizzaMenu[price_category].type) {
+    for (let price_category in pizzaMenu) {
+        for (let pizza_type of pizzaMenu[price_category].type) {
 
-                if (pizza === pizza_type.toLowerCase()) {
+            if (pizza === pizza_type.toLowerCase()) {
 
-                    for (let pizza_size in pizzaMenu[price_category].size) {
-                        if (size === pizza_size.toLowerCase()) {
-                            return pizzaMenu[price_category].size[pizza_size]
-                        }
+                for (let pizza_size in pizzaMenu[price_category].size) {
+                    if (size === pizza_size.toLowerCase()) {
+                        return pizzaMenu[price_category].size[pizza_size]
                     }
                 }
             }
         }
+    }
 }
 function randomizeAnswers(arr){
     return arr[Math.floor(Math.random() * arr.length)];
@@ -215,6 +215,7 @@ function modifyAnswer(keyword_tag, answ, num = 0) {
     }
 }
 
+
 const operate = (data) => {
     let answer = ""
     let keywords = []
@@ -316,6 +317,7 @@ const operate = (data) => {
         }
     }
 
+
     // __ORIGINAL MODE__
 
     // Y/N QUESTION <--> BOT KEYWORD SPOTTING
@@ -334,6 +336,16 @@ const operate = (data) => {
                         answer = randomizeAnswers(tagObj.responses);
                         answer = modifyAnswer(tagObj.tag, answer);
 
+                        // better logic and looks
+                        if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
+                            tagObj.tag === "thanks" || tagObj.tag === "current_order") {
+                            is_menu_printed = true; // to not ask additional question after these cases
+                        }
+                        if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
+                            let next_q = variants.type.botQuestion // what exact pizza you want
+                            answer += " " + randomizeAnswers(next_q)
+                        }
+
                         break;
                     }
                 almost_ready = false;
@@ -348,6 +360,7 @@ const operate = (data) => {
                 if (userText.includes(disagree_answer)) {
 
                     for (let tagObj of tags)
+                        if (tagObj.tag === "thanks")
                             for (let tagPattern of tagObj.patterns)
                                 if (userText.includes(tagPattern))
                                     userText = userText.replace(tagPattern, " ");
@@ -358,6 +371,7 @@ const operate = (data) => {
                 }
         }
     }
+
 
     // SIMPLE QUESTION <--> USER KEYWORD SPOTTING
 
@@ -374,6 +388,11 @@ const operate = (data) => {
                     answer = randomizeAnswers(tagObj.responses)
                     answer = modifyAnswer(tagObj.tag, answer)
 
+                    // better logic and looks
+                    if (tagObj.tag === "pizza" || tagObj.tag === "menu" || tagObj.tag === "goodbye" ||
+                        tagObj.tag === "thanks" || tagObj.tag === "current_order") {
+                        is_menu_printed = true; // to not ask additional question after these cases
+                    }
                     if (tagObj.tag === "pizza" || tagObj.tag === "menu") {
                         let next_q = variants.type.botQuestion  // what exact pizza you want
                         answer += " " + randomizeAnswers(next_q)
@@ -413,10 +432,14 @@ const operate = (data) => {
 
                         for (let pizza_type of pizzaModifiers.type) {
                             if (userText.includes(pizza_type)) {
+
                                 for (let pizza_size of pizzaModifiers.size)
                                     if (userText.includes(pizza_size)) {
                                         answer = randomizeAnswers(tagObj.responses)
-                                        getPrice(pizza_type, pizza_size).toString();
+                                        answer = answer.replace(/\[type]/g, pizza_type);
+                                        answer = answer.replace(/\[size]/g, pizza_size);
+                                        answer = answer.replace(/\[price]/g,
+                                            getPrice(pizza_type, pizza_size).toString());
                                         break;
                                     }
 
@@ -431,6 +454,7 @@ const operate = (data) => {
                 }
     }
 
+
     // __SWITCHING TO *PIZZA_MODE*__
 
     // if pizza's {type} mentioned --> activating *pizza_mode*
@@ -444,12 +468,38 @@ const operate = (data) => {
         }
     }
 
+
     // __PIZZA MODE__
 
     // cyclic questions until order is completed
     if (pizza_mode) {
 
         // CREATING OBJECTS AND PUSHING TO ORDER LIST
+
+        //  "{num} {size} {pizza_type}" recognition
+        for (let pizza_type of pizzaModifiers.type) {
+            if (userText.includes(pizza_type))
+                for (let quantity of variants.quantity)
+                    if(userText.includes(quantity))
+                        for(let pizza_size of pizzaModifiers.size)
+                            if (userText.includes(quantity + " " + pizza_size + " " + pizza_type)) {
+
+                                // deleting info  --- not to get keywords for the second time after
+                                userText = userText.replace(quantity, "");
+                                userText = userText.replace(pizza_size, "");
+                                userText = userText.replace(pizza_type, "");
+
+                                let amount = getAmount(quantity); // "three" --> 3 as int
+
+                                // create and push pizzas
+                                for (let i = 0; i < amount; i++)
+                                    pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
+
+
+                                pizza_quantity += amount;
+                                is_pizza_prop_upd = true;
+                            }
+        }
 
         //  "{num} {pizza_type}" recognition
         for (let pizza_type of pizzaModifiers.type) {
@@ -458,6 +508,8 @@ const operate = (data) => {
                     if (userText.includes(quantity + " " + pizza_type)) {
 
                         // deleting info  --- not to get keywords for the second time after
+                        userText = userText.replace(quantity, "");
+                        userText = userText.replace(pizza_type, "");
 
                         let amount = getAmount(quantity); // "three" --> 3 as int
 
@@ -477,6 +529,8 @@ const operate = (data) => {
                     if (userText.includes(pizza_size + " " + pizza_type)) {
 
                         // deleting info  --- not to get keywords for the second time after
+                        userText = userText.replace(pizza_size, "");
+                        userText = userText.replace(pizza_type, "");
 
                         pizza_lst.push({type: pizza_type, size: pizza_size, sauce: "", crust: ""});
 
@@ -490,6 +544,7 @@ const operate = (data) => {
             if (userText.includes(pizza_type)) {
 
                 // deleting info  --- not to get keywords for the second time after
+                userText = userText.replace(pizza_type, "");
 
                 pizza_lst.push({type: pizza_type, size: "", sauce: "", crust: ""});
 
@@ -498,15 +553,34 @@ const operate = (data) => {
             }
         }
 
+
         // SORTING [as order will be filled respectively]
         pizza_lst = bubbleSort(userTextOrig, pizza_lst, "type");
 
+
         // FILLING ORDER
+
         let textNoKeywords = userText; // copy for further sorting
         // get modifier keywords
         for (let pizModProperty in pizzaModifiers) {
             for (let modifyPattern of pizzaModifiers[pizModProperty]) {
+
+                let keyword_pushed = false;
                 if (textNoKeywords.includes(modifyPattern)) {
+
+                    // add keyword <-- if (key:"") of pizza in pizza list
+                    for (let i = 0; i < pizza_lst.length; i++) {
+                        for (let pizza_prop in pizza_lst[i])
+                            if (pizModProperty === pizza_prop)
+                                if (pizza_lst[i][pizza_prop] === "") {
+                                    keywords.push({"tag": pizModProperty, "keyword": modifyPattern});
+                                    keyword_pushed = true;
+                                    break;
+                                }
+
+                        if(keyword_pushed)
+                            break;
+                    }
                     textNoKeywords = textNoKeywords.replace(modifyPattern, "");
                 }
             }
@@ -522,90 +596,132 @@ const operate = (data) => {
                     for (let i = 0; i < pizza_lst.length; i++)
                         if (pizza_lst[i][property] === "") {
                             pizza_lst[i][keywordObj.tag] = keywordObj.keyword;
+
+                            is_pizza_prop_upd = true; // better looks
                             break;
                         }
         }
-    }
 
-    // PICK MODIFIER QUESTION
 
-    // picking next question to modify order
-    for (let i = 0; i < pizza_lst.length; i++) {
 
-        let answer_picked;
-        for (let property in pizza_lst[i]) {
+        // PICK MODIFIER QUESTION
 
-            answer_picked = false;
-            if (pizza_lst[i][property] === "") {
+        // picking next question to modify order
+        for (let i = 0; i < pizza_lst.length; i++) {
 
-                // text formatting
-                if (answer !== "" && !yes_no_q)
-                    answer += " ";
+            let answer_picked;
+            for (let property in pizza_lst[i]) {
 
-                // better looks
-                if (is_pizza_prop_upd) {
-                    let praising_list = variants.praising;
-                    answer = randomizeAnswers(praising_list); // Okay! Great! etc..
-                    answer += " ";
+                answer_picked = false;
+                if (pizza_lst[i][property] === "") {
+
+                    // text formatting
+                    if (answer !== "" && !yes_no_q)
+                        answer += " ";
+
+                    // better looks
+                    if (is_pizza_prop_upd) {
+                        let praising_list = variants.praising;
+                        answer = randomizeAnswers(praising_list); // Okay! Great! etc..
+                        answer += " ";
+                    }
+
+                    switch (property) {
+                        case "size":
+
+                            // in case user asked to show possible options
+                            for (let clarifierQ of variants.userClarification)
+                                if (userTextOrig.includes(clarifierQ)) {
+                                    answer = randomizeAnswers(variants.size.botAnswer); // list of sizes
+                                    answer_picked = true;
+                                }
+
+                            if (!answer_picked)
+                                answer += randomizeAnswers(variants.size.botQuestion); // what size
+
+                            answer_picked = true;
+                            break;
+                        case "sauce":
+
+                            // in case user asked to show possible options
+                            for (let clarifierQ of variants.userClarification)
+                                if (userTextOrig.includes(clarifierQ)) {
+                                    answer = randomizeAnswers(variants.sauce.botAnswer); // types of sauces
+                                    answer = modifyAnswer("sauce", answer);
+                                    answer_picked = true;
+                                }
+
+                            if (!answer_picked) {
+                                let sauce_answer = randomizeAnswers(variants.sauce.botQuestion); // what sauce
+                                sauce_answer = modifyAnswer("sauce", sauce_answer);
+                                answer += sauce_answer;
+                            }
+
+                            answer_picked = true;
+                            break;
+                        case "crust":
+
+                            // in case user asked to show possible options
+                            for (let clarifierQ of variants.userClarification)
+                                if (userTextOrig.includes(clarifierQ)) {
+                                    answer = randomizeAnswers(variants.crust.botAnswer); // crust types
+                                    answer_picked = true;
+                                }
+
+                            if (!answer_picked)
+                                answer += randomizeAnswers(variants.crust.botQuestion); // what crust
+
+                            answer_picked = true;
+                            break;
+                    }
                 }
-
-                switch (property) {
-                    case "size":
-
-                        if (!answer_picked)
-                            answer += randomizeAnswers(variants.size.botQuestion); // what size
-
-                        answer_picked = true;
-                        break;
-                    case "sauce":
-                        if (!answer_picked) {
-                            let sauce_answer = randomizeAnswers(variants.sauce.botQuestion); // what sauce
-                            sauce_answer = modifyAnswer("sauce", sauce_answer);
-                            answer += sauce_answer;
-                        }
-
-                        answer_picked = true;
-                        break;
-                }
+                if (answer_picked)
+                    break;
             }
             if (answer_picked)
                 break;
         }
-        if (answer_picked)
-            break;
-    }
 
-    // CURRENT ORDER READY
 
-    let all_pizzas_done = 0
-    for (let i = 0; i < pizza_lst.length; i++) {
-        if (Object.values(pizza_lst[i]).every(x => x !== '')) { // all prop of all pizzas are not empty
 
-            all_pizzas_done++;
-            if(all_pizzas_done === pizza_lst.length) {
-                if (pizza_lst.length === 1) {
-                    answer = randomizeAnswers(variants.readyOrder.notify);   // order is ready!
-                    answer += " " + randomizeAnswers(variants.readyOrder.resultOne);
-                    answer = modifyAnswer("ready_pizza", answer);
-                } else {
-                    answer = randomizeAnswers(variants.readyOrder.notify);  // order is ready!
+        // CURRENT ORDER READY
 
-                    // list for several pizzas
-                    for (let i = 0; i < pizza_lst.length; i++){
-                        answer += "\n " + variants.readyOrder.resultSeveral;
-                        answer = modifyAnswer("ready_pizza", answer, i);
+        let all_pizzas_done = 0
+        for (let i = 0; i < pizza_lst.length; i++) {
+            if (Object.values(pizza_lst[i]).every(x => x !== '')) { // all prop of all pizzas are not empty
+
+                all_pizzas_done++;
+                if(all_pizzas_done === pizza_lst.length) {
+                    if (pizza_lst.length === 1) {
+                        answer = randomizeAnswers(variants.readyOrder.notify);   // order is ready!
+                        answer += " " + randomizeAnswers(variants.readyOrder.resultOne);
+                        answer = modifyAnswer("ready_pizza", answer);
+                    } else {
+                        answer = randomizeAnswers(variants.readyOrder.notify);  // order is ready!
+
+                        // list for several pizzas
+                        for (let i = 0; i < pizza_lst.length; i++){
+                            answer += "\n " + variants.readyOrder.resultSeveral;
+                            answer = modifyAnswer("ready_pizza", answer, i);
+                        }
                     }
+
+                    answer += "\n" + randomizeAnswers(variants.readyOrder.oneMore); // want to order more?
+
+                    almost_ready = true;
+                    pizza_mode = false;
                 }
-
-                answer += "\n" + randomizeAnswers(variants.readyOrder.oneMore); // want to order more?
-
-                almost_ready = true;
-                pizza_mode = false;
             }
         }
     }
 
+
+
     // __ADDITIONAL AGGRESSIVE QUESTION__
+    // to switch to pizza_mode
+    if(!pizza_mode && answer !== "" && !is_menu_printed && !is_help_printed && !almost_ready)
+        answer += "\n " + randomizeAnswers(variants.order); // want to order pizza?
+
 
     // __FALLBACKS__
     if (answer === "") {
@@ -613,7 +729,9 @@ const operate = (data) => {
         answer = randomizeAnswers(variants.fallback)
         answer += "\"" + data + "\"";
 
-        // hard fallback (= 4 soft fallbacks)
+        botAnswers.push("fallback")
+
+        // hard fallback (= 3 soft fallbacks)
         if (botAnswers.length > 4)
             // if last 4 bot answers identical
             if (botAnswers.slice(-4).every((val, i, arr) => val === arr[0]))
