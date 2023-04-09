@@ -44,6 +44,67 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
             function randomizeAnswers(arr) {
                 return arr[Math.floor(Math.random() * arr.length)];
             }
+            // ask question about unfinished pizza order
+            function getNextQuestion() {
+                let ans = ""
+                // picking next question to modify order
+                for (let i = 0; i < pizza_lst.length; i++) {
+
+                    let answer_picked;
+
+                    for (let property in pizza_lst[i]) {
+
+                        answer_picked = false;
+
+                        if (pizza_lst[i][property] === "") {
+
+                            switch (property) {
+                                case "size":
+                                    ans += randomizeAnswers(variants.size.botQuestion);
+                                    answer_picked = true;
+                                    break;
+                                case "crust":
+                                    ans += randomizeAnswers(variants.crust.botQuestion);
+                                    answer_picked = true;
+                                    break;
+                            }
+                        }
+                        if (answer_picked)
+                            break;
+                    }
+                    if (answer_picked)
+                        break;
+                }
+
+                if (ans === ""){
+                    // CURRENT ORDER READY
+                    let all_pizzas_done = 0
+                    for (let i = 0; i < pizza_lst.length; i++) {
+                        if (Object.values(pizza_lst[i]).every(x => x !== '')) {
+
+                            all_pizzas_done++;
+
+                            if(all_pizzas_done === pizza_lst.length) {
+                                if (pizza_lst.length === 1) {
+                                    ans = randomizeAnswers(variants.readyOrder.notify)
+                                    ans += " " + randomizeAnswers(variants.readyOrder.resultOne)
+                                    ans = modifyAnswer("ready_pizza", ans)
+                                } else {
+                                    ans = randomizeAnswers(variants.readyOrder.notify)
+
+                                    for (let i = 0; i < pizza_lst.length; i++) {
+                                        ans += "\n " + variants.readyOrder.resultSeveral
+                                        ans = modifyAnswer("ready_pizza", ans, i)
+                                    }
+                                }
+
+                                ans += "\n" + randomizeAnswers(variants.readyOrder.oneMore)
+                            }
+                        }
+                    }
+                }
+                return ans
+            }
 
         })
         .catch(err => { throw err });
