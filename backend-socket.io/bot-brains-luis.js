@@ -106,6 +106,37 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                 return ans
             }
 
+            let answer = ""
+            let userIntent = predictionJSON.prediction.topIntent.toLowerCase()
+            const entities = predictionJSON.prediction.entities
+
+            console.log(userIntent)
+            console.log(entities)
+
+            // get the last bot answer
+            let botAnswers_last = botAnswers[botAnswers.length - 1].slice(botAnswers[botAnswers.length - 1]
+                .lastIndexOf('\n')).replace(/\n/g, "")
+
+            switch(userIntent){
+                case "agreement":
+                    if (variants.order.includes(botAnswers_last))
+                        userIntent = "getpizzalist"
+                    if (variants.readyOrder.oneMore.includes(botAnswers_last))
+                        answer = randomizeAnswers(variants.readyOrder.notDoneYet)
+                    break;
+                case "rejection":
+                    if (variants.order.includes(botAnswers_last))
+                        answer = randomizeAnswers(variants.noQ)
+                    if (variants.readyOrder.oneMore.includes(botAnswers_last)) {
+                        answer = randomizeAnswers(variants.readyOrder.order_number)
+                        answer = modifyAnswer("order_number", answer)
+                        answer += "\n" + randomizeAnswers(variants.order_details.grab_meal)
+
+                        botAnswers.push(answer)
+                    }
+                    break;
+            }
+
         })
         .catch(err => { throw err });
 }
