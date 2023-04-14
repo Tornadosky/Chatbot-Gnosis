@@ -77,7 +77,6 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                 }
 
                 if (ans === ""){
-                    // CURRENT ORDER READY
                     let all_pizzas_done = 0
                     for (let i = 0; i < pizza_lst.length; i++) {
                         if (Object.values(pizza_lst[i]).every(x => x !== '')) {
@@ -87,7 +86,6 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                             if(all_pizzas_done === pizza_lst.length) {
                                 if (pizza_lst.length === 1) {
                                     ans = randomizeAnswers(variants.readyOrder.notify)
-                                    ans += " " + randomizeAnswers(variants.readyOrder.resultOne)
                                     ans = modifyAnswer("ready_pizza", ans)
                                 } else {
                                     ans = randomizeAnswers(variants.readyOrder.notify)
@@ -119,8 +117,6 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
 
             switch(userIntent){
                 case "agreement":
-                    if (variants.order.includes(botAnswers_last))
-                        userIntent = "getpizzalist"
                     if (variants.readyOrder.oneMore.includes(botAnswers_last))
                         answer = randomizeAnswers(variants.readyOrder.notDoneYet)
                     break;
@@ -136,7 +132,38 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                     }
                     break;
             }
-
+            // decide what to do according to user Intent
+            switch(userIntent) {
+                case "insertcrust":
+                    // insert crust that user printed
+                    if (entities.hasOwnProperty('CrustList')) {
+                        let j = 0
+                        for (let i = 0; i < pizza_lst.length; i++) {
+                            if (pizza_lst[i].crust === "") {
+                                pizza_lst[i].crust = entities.CrustList[0][j].toLowerCase()
+                                j++
+                            }
+                        }
+                        answer = getNextQuestion()
+                    }
+                    break;
+                case "insertsize":
+                    // insert size that user printed
+                    if (entities.hasOwnProperty('SizeList')) {
+                        let k = 0
+                        for (let i = 0; i < pizza_lst.length; i++) {
+                            if (pizza_lst[i].size === "") {
+                                pizza_lst[i].size = entities.SizeList[0][k].toLowerCase()
+                                k++
+                            }
+                        }
+                        answer = getNextQuestion()
+                    }
+                    break;
+                case "help":
+                    answer = randomizeAnswers(tags["help"])
+                    break;
+            }
         })
         .catch(err => { throw err });
 }
