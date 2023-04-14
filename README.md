@@ -1,5 +1,7 @@
 # Project description
 Pizza Chatbot with _Node.js_ and _React_, designed with Microsoft LUIS and keyword-spotting hosted with Azure
+
+
 # Installation
 
 **1. Clone GitHub-project**
