@@ -199,6 +199,36 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                     }))
                     answer += "\n" + randomizeAnswers(variants.order)
                     break;
+                case "socialmedia":
+                    if (entities.hasOwnProperty('SocialMediaList'))
+                    {
+                        // create array of social media without repeats
+                        let SocialMediaSet = new Set()
+                        entities.SocialMediaList.forEach(socialMedia => {
+                            SocialMediaSet.add(socialMedia[0])
+                        })
+                        let SocialMediaArr = Array.from(SocialMediaSet)
+                        // answer exactly with links user wants to know
+                        SocialMediaArr.forEach(socialMediaType => {
+                            if (pizzeriaInfo.socialMedia.hasOwnProperty(socialMediaType.toLowerCase())) {
+                                answer += "Our " + socialMediaType + " is: "
+                                answer += pizzeriaInfo.socialMedia[socialMediaType.toLowerCase()] + " \n"
+                            }
+                        })
+                    }else{
+                        // by default answers with all links described in file
+                        // first create an array from json object and print it in answer
+                        let socialMediaArr = []
+                        for (let key in pizzeriaInfo.socialMedia)
+                            socialMediaArr.push(key)
+
+                        answer = randomizeAnswers(tags["social media"])
+                        socialMediaArr.forEach(socialMedia => {
+                            answer += socialMedia + ": " + pizzeriaInfo.socialMedia[socialMedia] + "\n"
+                        })
+                    }
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
             }
         })
         .catch(err => { throw err });
