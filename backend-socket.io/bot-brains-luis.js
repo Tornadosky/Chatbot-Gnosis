@@ -185,6 +185,20 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                 case "goodbye":
                     answer = randomizeAnswers(tags["goodbye"])
                     break;
+                case "introduction":
+                    answer = randomizeAnswers(tags["introduction"])
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
+                case "location":
+                    answer = randomizeAnswers(tags["location"]).replace(/\[.*/g, pizzeriaInfo.locationDetails)
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
+                case "rating":
+                    answer = randomizeAnswers(tags["rating"]).replace(/\[.*/g, pizzeriaInfo.reviews.map((elem) => {
+                        return (" " + elem)
+                    }))
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
             }
         })
         .catch(err => { throw err });
