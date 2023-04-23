@@ -163,6 +163,28 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                 case "help":
                     answer = randomizeAnswers(tags["help"])
                     break;
+                case "pickupdetails":
+                    if (entities.hasOwnProperty('PickupList')) {
+                        pickupAction = entities.PickupList[0][0]
+                        if (pickupAction === "delivery")
+                            answer = randomizeAnswers(variants.order_details.user_address_q)
+                                .replace(/\[.*]/g, getRandomNumberBetween(15, 60).toString())
+
+                        if (pickupAction === "pickup") {
+                            answer = randomizeAnswers(variants.order_details.our_address)
+                                .replace(/\[restaurant_location\]/g, pizzeriaInfo.locationDetails)
+                                .replace(/\[min\]/g, getRandomNumberBetween(15, 60).toString())
+                            restart()
+                        }
+                    }
+                    break;
+                case "greetings":
+                    answer = randomizeAnswers(tags["greetings"])
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
+                case "goodbye":
+                    answer = randomizeAnswers(tags["goodbye"])
+                    break;
             }
         })
         .catch(err => { throw err });
