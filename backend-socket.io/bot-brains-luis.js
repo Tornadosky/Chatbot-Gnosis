@@ -3,11 +3,12 @@ const tags = require('./bot-data/tags-luis.json')
 const pizzeriaInfo = require("./bot-data/pizzaModifiers-luis.json")
 const pizzaMenu = require("./bot-data/pizzaMenu-luis.json")
 const variants = require("./bot-data/variants-luis.json")
+const config = require("./config.json")
 
 const operate = (data, pizza_lst, botAnswers, pickupAction) => {
     // url to get prediction from LUIS app
-    let url = 'https://gnosis-luis-bot.cognitiveservices.azure.com/luis/prediction/v3.0/apps/1499890b-2973-4b75-b381-74709ebcc0d9/slots/production/predict?verbose=true&show-all-intents=true&log=true&subscription-key=8eac63d31758445ebaad91af7e8321d8&query=' +
-        data.replace(/ /g, "_")
+    let url = 'https://gnosis-luis-bot.cognitiveservices.azure.com/luis/prediction/v3.0/apps/1499890b-2973-4b75-b381-74709ebcc0d9/slots/production/predict?verbose=true&show-all-intents=true&log=true&subscription-key=' +
+        config["luis_key"] + '&query=' + data.replace(/ /g, "_")
 
     // create prediction JSON object from LUIS url
     return fetch(url)
