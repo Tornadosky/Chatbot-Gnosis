@@ -264,6 +264,14 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                     }
                     answer += "\n" + randomizeAnswers(variants.order)
                     break;
+                case "thanks":
+                    answer = randomizeAnswers(tags["thanks"])
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
+                case "music":
+                    answer = randomizeAnswers(tags["music"])
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
             }
         })
         .catch(err => { throw err });
