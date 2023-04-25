@@ -230,6 +230,16 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                     }
                     answer += "\n" + randomizeAnswers(variants.order)
                     break;
+                case "reviews":
+                    const selected = pizzeriaInfo.reviews.sort(() => 0.5 - Math.random()).slice(0,3);
+                    let str = ""
+                    selected.map((elem) => {
+                        return (elem + "\n")
+                    }).forEach(elem => {
+                        str += "- " + elem
+                    })
+                    answer = randomizeAnswers(tags["reviews"]).replace(/\[.*/g, str)
+                    break;
             }
         })
         .catch(err => { throw err });
