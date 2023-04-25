@@ -240,6 +240,30 @@ const operate = (data, pizza_lst, botAnswers, pickupAction) => {
                     })
                     answer = randomizeAnswers(tags["reviews"]).replace(/\[.*/g, str)
                     break;
+                case "workinghours":
+                    let today = new Date()
+                    let weekday = today.getDay()
+                    let hours = today.getHours()
+                    const tomorrow = new Date(today)
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    let tomorrowDate = tomorrow.toISOString().slice(0, 10)
+
+                    answer = randomizeAnswers(tags["working hours"])
+
+                    if (entities.hasOwnProperty('datetimeV2')) {
+                        if (entities.datetimeV2[0].values[0].timex === "PRESENT_REF")
+                            if (weekday >= pizzeriaInfo.workingHours.dayMin && weekday <= pizzeriaInfo.workingHours.dayMax && hours < pizzeriaInfo.workingHours.timeMax && hours > pizzeriaInfo.workingHours.timeMin)
+                                answer = "We are working right now"
+                            else
+                                answer = "We are closed right now"
+                        if (entities.datetimeV2[0].values[0].timex === tomorrowDate)
+                            if (tomorrow.getDay() >= pizzeriaInfo.workingHours.dayMin && tomorrow.getDay() <= pizzeriaInfo.workingHours.dayMax)
+                                answer = "We will be working tomorrow"
+                            else
+                                answer = "We will be closed tomorrow"
+                    }
+                    answer += "\n" + randomizeAnswers(variants.order)
+                    break;
             }
         })
         .catch(err => { throw err });
